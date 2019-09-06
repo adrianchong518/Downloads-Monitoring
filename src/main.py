@@ -1,7 +1,8 @@
 import time
 
 import watchdog.events
-import watchdog.observers
+
+from foldermonitoring.folder_monitor import FolderMonitor
 
 
 TRACKING_FOLDER = "/Users/adrianchong/Downloads"
@@ -22,17 +23,14 @@ class EventHandler(watchdog.events.FileSystemEventHandler):
 
 
 def main():
-    eventHander = EventHandler()
-    observer = watchdog.observers.Observer()
-    observer.schedule(eventHander, TRACKING_FOLDER, recursive=True)
+    folderMonitor = FolderMonitor(TRACKING_FOLDER, EventHandler())
 
-    observer.start()
+    folderMonitor.start()
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        observer.stop()
-        observer.join()
+        folderMonitor.stop()
 
 
 if __name__ == "__main__":
